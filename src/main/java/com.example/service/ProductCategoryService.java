@@ -1,6 +1,9 @@
 package com.example.service;
 
+import com.example.dto.ProductCategoryExecution;
 import com.example.entity.ProductCategory;
+import com.example.enums.ProductCategoryStateEnum;
+import com.example.exceptions.ProductCategoryOperationException;
 
 import java.util.List;
 
@@ -16,4 +19,8 @@ public interface ProductCategoryService {
      */
 
     List<ProductCategory> queryProductCategoryList(long shopId);
+
+
+    ProductCategoryExecution batchAddProductCategoryList(List<ProductCategory> productCategories)
+            throws ProductCategoryOperationException;
 }
