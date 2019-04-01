@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.BaseTest;
+import com.example.dto.ImageHolder;
 import com.example.dto.ShopExecution;
 import com.example.entity.Area;
 import com.example.entity.PersonInfo;
@@ -49,7 +50,8 @@ public class ShopServiceTest extends BaseTest {
         shop.setShopName("ikun爆破");
         File shopImg = new File("E:/webpic/saber.jpg");
         InputStream is = new FileInputStream(shopImg);
-        ShopExecution shopExecution= shopService.modifyShop(shop,is,"saber.jpg");
+        ImageHolder imageHolder = new ImageHolder("saber.jpg",is);
+        ShopExecution shopExecution= shopService.modifyShop(shop,imageHolder);
         System.out.println("新的图片地址"+shopExecution.getShop().getShopImg());
 
     }
@@ -76,7 +78,8 @@ public class ShopServiceTest extends BaseTest {
         //String filePath = "E:\\webpic\\jiaxin.jpg";
         File shopImg = new File("E:/webpic/jiaxin.jpg");
         InputStream is = new FileInputStream(shopImg);
-        ShopExecution se = shopService.addShop(shop,is,shopImg.getName());
+        ImageHolder imageHolder = new ImageHolder(shopImg.getName(),is);
+        ShopExecution se = shopService.addShop(shop,imageHolder);
         assertEquals(ShopStateEnum.CHECK.getState(),se.getState());
 
     }

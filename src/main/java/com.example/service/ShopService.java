@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.ImageHolder;
 import com.example.dto.ShopExecution;
 import com.example.entity.Shop;
 import com.example.exceptions.ShopOperationException;
@@ -24,11 +25,11 @@ public interface ShopService {
 
     Shop getByShopId(long shopId);
 
-    ShopExecution modifyShop(Shop shop, InputStream shopImgInpStream,String fileName) throws ShopOperationException;
+    ShopExecution modifyShop(Shop shop, ImageHolder thumbnail) throws ShopOperationException;
 
 
     //ShopExecution addShop(Shop shop, InputStream shopImg,String fileName);
-    ShopExecution addShop(Shop shop, InputStream shopImgInpStream,String fileName) throws ShopOperationException;
+    ShopExecution addShop(Shop shop, ImageHolder thumbnail ) throws ShopOperationException;
 
 
 }

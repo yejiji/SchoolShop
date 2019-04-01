@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import com.example.dao.ShopDao;
+import com.example.dto.ImageHolder;
 import com.example.dto.ShopExecution;
 import com.example.entity.Shop;
 import com.example.enums.ShopStateEnum;
@@ -85,20 +86,20 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public ShopExecution modifyShop(Shop shop, InputStream shopImgInpStream, String fileName) throws ShopOperationException {
+    public ShopExecution modifyShop(Shop shop, ImageHolder thumbnail) throws ShopOperationException {
 
         //1.判断是否需要更新图片
         if (shop==null||shop.getShopId()==null){
             return new ShopExecution(ShopStateEnum.NULL_SHOP_INFO);
         }else {
             try {
-            if (shopImgInpStream!=null&&fileName!=null&&!"".equals(fileName)){
+            if (thumbnail.getImage()!=null&&thumbnail.getImageName()!=null&&!"".equals(thumbnail.getImageName())){
                 System.out.println("执行删除");
                 Shop tempShop = shopDao.queryByShopId(shop.getShopId());
                 if (tempShop.getShopImg()!=null){
                     ImageUtil.deleteFileOrPath(tempShop.getShopImg());
                 }
-                addShopImg(shop,shopImgInpStream,fileName);
+                addShopImg(shop,thumbnail);
             }
             shop.setLastEditTime(new Date());
             int effectedNum = shopDao.updateShop(shop);
@@ -117,7 +118,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     @Transactional
-    public ShopExecution addShop(Shop shop, InputStream shopImg,String fileName)throws ShopOperationException {
+    public ShopExecution addShop(Shop shop, ImageHolder thumbnail)throws ShopOperationException {
         //控制判断
         if (shop == null){
             return new ShopExecution(ShopStateEnum.NULL_SHOP_INFO);
@@ -130,9 +131,9 @@ public class ShopServiceImpl implements ShopService {
             if (effectedNum <=0 ){
                 throw new ShopOperationException("店铺创建失败");
             }else {
-                if (shopImg !=null){
+                if (thumbnail.getImage() !=null){
                     try {
-                        addShopImg(shop, shopImg,fileName);
+                        addShopImg(shop, thumbnail);
                     }catch (Exception e){
                         throw new ShopOperationException("addShopImgErr"+e.getMessage());
                     }
@@ -150,10 +151,10 @@ public class ShopServiceImpl implements ShopService {
         return new ShopExecution(ShopStateEnum.CHECK,shop);
     }
 
-    private void addShopImg(Shop shop, InputStream shopImg,String fileName){
+    private void addShopImg(Shop shop, ImageHolder thumbnail){
         //获取shop图片目录的相对值路径
         String dest = PathUtil.getShopImagePath(shop.getShopId());
-        String ShopImgAddr = ImageUtil.generateThumbnail(shopImg,fileName,dest);
+        String ShopImgAddr = ImageUtil.generateThumbnail(thumbnail,dest);
         shop.setShopImg(ShopImgAddr);
     }
 

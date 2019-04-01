@@ -1,5 +1,6 @@
 package com.example.util;
 
+import com.example.dto.ImageHolder;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,14 +36,14 @@ public class ImageUtil {
 //        }
 //        return relativeAddr;
 //    }
-        public static String generateThumbnail(InputStream thumbnail,String fileName,String targetAddr) {
+        public static String generateThumbnail(ImageHolder thumbnail, String targetAddr) {
         String realFileName = getRandomFileName();
-        String extension = getFileExtension(fileName);
+        String extension = getFileExtension(thumbnail.getImageName());
         makeDirPath(targetAddr);
         String relativeAddr = targetAddr + realFileName + extension;
         File dest = new File(PathUtil.getImgBasePath() + relativeAddr);
         try {
-            Thumbnails.of(thumbnail).size(200, 200).watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(basePath+"/tubiao.jpg")),
+            Thumbnails.of(thumbnail.getImage()).size(200, 200).watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(basePath+"/tubiao.jpg")),
                     0.25f).outputQuality(0.8f)
                     .toFile(dest);
         } catch (IOException e) {
