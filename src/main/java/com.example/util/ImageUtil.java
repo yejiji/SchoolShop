@@ -51,6 +51,21 @@ public class ImageUtil {
         }
         return relativeAddr;
     }
+    public static String generateNormalThumbnail(ImageHolder thumbnail, String targetAddr) {
+        String realFileName = getRandomFileName();
+        String extension = getFileExtension(thumbnail.getImageName());
+        makeDirPath(targetAddr);
+        String relativeAddr = targetAddr + realFileName + extension;
+        File dest = new File(PathUtil.getImgBasePath() + relativeAddr);
+        try {
+            Thumbnails.of(thumbnail.getImage()).size(337, 640).watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(basePath+"/tubiao.jpg")),
+                    0.25f).outputQuality(0.9f)
+                    .toFile(dest);
+        } catch (IOException e) {
+            throw new RuntimeException("创建缩略图失败：" + e.toString());
+        }
+        return relativeAddr;
+    }
 
 
 
