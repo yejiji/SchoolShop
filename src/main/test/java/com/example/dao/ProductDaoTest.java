@@ -65,4 +65,27 @@ public class ProductDaoTest extends BaseTest {
 
     }
 
+    @Test
+    public void testQueryProductById()throws Exception{
+
+        Product product = productDao.queryProductById(5);
+        System.out.println(product.getProductImgList().size());
+
+    }
+
+    @Test
+    public void testUpdatePorduct()throws Exception{
+        Product product = new Product();
+        ProductCategory pc = new ProductCategory();
+        Shop shop = new Shop();
+        shop.setShopId(1L);
+        pc.setProductCategoryId(4L);
+        product.setProductId(1L);
+        product.setShop(shop);
+        product.setProductName("更改名称吼");
+        product.setProductCategory(pc);
+        int effectedNum =productDao.updateProduct(product);
+        assertEquals(1,effectedNum);
+    }
+
 }

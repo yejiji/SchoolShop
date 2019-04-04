@@ -20,7 +20,7 @@
 			<id column="product_category_id" property="productCategoryId"/>
 			<result column="product_category_name" property="productCategoryName"/>
 		</association>
-		<association property="Shop" column="shop_id" javaType="com.example.entity.Shop">
+		<association property="shop" column="shop_id" javaType="com.example.entity.Shop">
 			<id column="shop_id" property="shopId" />
 			<result column="owner_id" property="ownerId" />
 			<result column="shop_name" property="shopName" />
@@ -81,7 +81,7 @@
 		ORDER BY
 		pm.priority DESC
 	</select>
-	<update id="updateProduct"parameterType="com.example.entity.Product"
+	<update id="updateProduct" parameterType="com.example.entity.Product"
 			keyProperty="product_id" useGeneratedKeys="true">
 		UPDATE tb_product
 		<set>
@@ -94,8 +94,7 @@
 			<if test="lastEditTime != null">last_edit_time=#{lastEditTime},</if>
 			<if test="enableStatus != null">enable_status=#{enableStatus},</if>
 			<if test="point != null">point=#{point},</if>
-			<if
-					test="productCategory != null
+			<if test="productCategory != null
 				 and productCategory.productCategoryId != null">
 				product_category_id=#{productCategory.productCategoryId}
 			</if>

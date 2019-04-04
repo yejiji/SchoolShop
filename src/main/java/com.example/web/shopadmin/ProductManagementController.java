@@ -3,9 +3,11 @@ package com.example.web.shopadmin;
 import com.example.dto.ImageHolder;
 import com.example.dto.ProductExecution;
 import com.example.entity.Product;
+import com.example.entity.ProductCategory;
 import com.example.entity.Shop;
 import com.example.enums.ProductStateEnum;
 import com.example.exceptions.ProductOperationException;
+import com.example.service.ProductCategoryService;
 import com.example.service.ProductService;
 import com.example.util.CodeUtil;
 import com.example.util.HttpServletRequestUtil;
@@ -16,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -24,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by z1271 on 2019/4/2.
@@ -34,6 +39,8 @@ public class ProductManagementController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductCategoryService productCategoryService;
 
     private static final int IMAHEMAXCOUNT = 6;
 
@@ -55,8 +62,10 @@ public class ProductManagementController {
         try {
             if (multipartResolver.isMultipart(request)){
                 multipartHttpServletRequest = (MultipartHttpServletRequest)request;
+                //取出缩略图
                 CommonsMultipartFile thumbnailFile = (CommonsMultipartFile) multipartHttpServletRequest
                         .getFile("thumbnail");
+                thumnail = new ImageHolder(thumbnailFile.getOriginalFilename(),thumbnailFile.getInputStream());
                 for (int i=0;i<IMAHEMAXCOUNT;i++){
                     CommonsMultipartFile productImg = (CommonsMultipartFile)multipartHttpServletRequest
                             .getFile("productImg"+i);
@@ -113,5 +122,26 @@ public class ProductManagementController {
         }
         return modelMap;
     }
+
+    @RequestMapping(value = "/getproductbyid",method = RequestMethod.GET)
+    @ResponseBody
+    private Map<String,Object> getProductById(@RequestParam Long productId){
+
+        Map<String,Object> modelMap = new HashMap<String,Object>();
+        if (productId>-1){
+            Product product = productService.getProductById(productId);
+            List<ProductCategory> productCategoryList = productCategoryService.queryProductCategoryList(product.getShop().getShopId());
+            modelMap.put("product",product);
+            modelMap.put("productCategoryList",productCategoryList);
+            modelMap.put("success",true);
+        }else {
+            modelMap.put("success",false);
+            modelMap.put("errMsg","empty productId");
+
+        }
+        return modelMap;
+    }
+
+
 
 }

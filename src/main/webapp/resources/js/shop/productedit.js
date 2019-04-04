@@ -46,7 +46,7 @@ $(function () {
     function getCategory() {
         $.getJSON(categoryUrl,function (data) {
             if(data.success){
-                var productCategoryList = data.productCategoryList;
+                var productCategoryList = data.data;
                 var optionHtml = '';
                 productCategoryList.map(function (item, index) {
                     optionHtml += '<option data-value="'
@@ -79,7 +79,7 @@ $(function () {
             product.productId = productId;
 
             var thumbnail = $('#small-img')[0].files[0];
-            console.log(thumbnail);
+
             var formData = new FormData();
             formData.append('thumbnail', thumbnail);
             $('.detail-img').map(
