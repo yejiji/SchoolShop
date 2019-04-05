@@ -11,6 +11,7 @@ import com.example.enums.ProductStateEnum;
 import com.example.exceptions.ProductOperationException;
 import com.example.service.ProductService;
 import com.example.util.ImageUtil;
+import com.example.util.PageCalculator;
 import com.example.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductExecution getProductList(Product productCondition, int pageIndex, int pageSize) {
-        return null;
+        int rowIndex = PageCalculator.calculateRowIndex(pageIndex,pageSize);
+        List<Product> productList = productDao.queryProductList(productCondition,rowIndex,pageSize);
+        int count = productDao.queryProductCount(productCondition);
+        ProductExecution pe = new ProductExecution();
+        pe.setProductList(productList);
+        pe.setCount(count);
+        return pe;
     }
 
     @Override

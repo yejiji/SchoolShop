@@ -5,7 +5,7 @@ $(function () {
     var productId = getQueryString('productId');
     var infoUrl = '/shopadmin/getproductbyid?productId='+productId;
     var categoryUrl = '/shopadmin/getproductcategorylist';
-    var productPostUrl = '/shopamdin/modifyproduct';
+    var productPostUrl = '/shopadmin/modifyproduct';
     var isEdit = false;
     if(productId){
         getInfo(productId);

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sun.dc.pr.PRError;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -86,6 +87,20 @@ public class ProductDaoTest extends BaseTest {
         product.setProductCategory(pc);
         int effectedNum =productDao.updateProduct(product);
         assertEquals(1,effectedNum);
+    }
+
+    @Test
+    public void testQueryProductList() throws Exception{
+        Product productCondition = new Product();
+        List<Product> productList = productDao.queryProductList(productCondition,0,3);
+        System.out.println(productList.size());
+        int count = productDao.queryProductCount(productCondition);
+        System.out.println(count);
+        productCondition.setProductName("小天");
+        productList=productDao.queryProductList(productCondition,0,4);
+        System.out.println(productList.size());
+        count=productDao.queryProductCount(productCondition);
+        System.out.println(count);
     }
 
 }

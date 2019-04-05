@@ -142,6 +142,123 @@ public class ProductManagementController {
         return modelMap;
     }
 
+    @RequestMapping(value = "/modifyproduct",method = RequestMethod.POST)
+    @ResponseBody
+    private Map<String,Object>modifyProduct(HttpServletRequest request){
+        Map<String,Object> modelMap = new HashMap<String,Object>();
+        boolean statusChange = HttpServletRequestUtil.getBoolean(request,"statusChange");
+         if (!statusChange&&!CodeUtil.checkVerifyCode(request)){
+             modelMap.put("success",false);
+             modelMap.put("errMsg","输入了错误的验证码");
+             return modelMap;
+         }
+         ObjectMapper mapper = new ObjectMapper();
+         Product product = null;
+         ImageHolder thumbnail = null;
+         List<ImageHolder> productImgList = new ArrayList<ImageHolder>();
+         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(
+                 request.getSession().getServletContext()
+         );
+        try {
+           if (multipartResolver.isMultipart(request)){
+               MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
+               CommonsMultipartFile  thumbnailFile =(CommonsMultipartFile) multipartHttpServletRequest.getFile("thumbnail");
+               if (thumbnailFile!=null){
+                   thumbnail = new ImageHolder(thumbnailFile.getOriginalFilename(),thumbnailFile.getInputStream());
+               }
+               for (int i=0;i<IMAHEMAXCOUNT;i++){
+                   CommonsMultipartFile productImgFile = (CommonsMultipartFile)multipartHttpServletRequest
+                           .getFile("productImg"+i);
+                   if (productImgFile!=null){
+                       ImageHolder productImg = new ImageHolder(productImgFile.getOriginalFilename(),
+                               productImgFile.getInputStream());
+                       productImgList.add(productImg);
+                   }else {
+                       break;
+                   }
+               }
+           }
+        } catch (IOException e) {
+            modelMap.put("success",false);
+            modelMap.put("errMsg",e.toString());
+            return modelMap;
+        }
+        try {
+            String productStr = HttpServletRequestUtil.getString(request,"productStr");
+            product = mapper.readValue(productStr,Product.class);
+        } catch (Exception e) {
+            modelMap.put("success",false);
+            modelMap.put("errMsg",e.toString());
+            return modelMap;
+        }
+        if (product!=null){
+            try {
+                Shop currentShop = (Shop)request.getSession().getAttribute("currentShop");
+                Shop shop = new Shop();
+                shop.setShopId(currentShop.getShopId());
+                product.setShop(shop);
+                ProductExecution pe = productService.modifyProduct(product,thumbnail,productImgList);
+                if (pe.getState()==ProductStateEnum.SUCCESS.getState()){
+                    modelMap.put("success",true);
+                }else {
+                    modelMap.put("success",false);
+                    modelMap.put("errMsg",pe.getStateInfo());
+                }
+            }catch (RuntimeException e){
+                modelMap.put("success", false);
+                modelMap.put("errMsg", e.toString());
+                return modelMap;
+            }
+        }else {
+            modelMap.put("success",false);
+            modelMap.put("errMsg","请输入商品信息");
+        }
+        return modelMap;
+    }
+
+    @RequestMapping(value = "/listproductsbyshop", method = RequestMethod.GET)
+    @ResponseBody
+    private Map<String,Object>getproductlistbyshop(HttpServletRequest request){
+        Map<String, Object> modelMap = new HashMap<String, Object>();
+        int pageIndex = HttpServletRequestUtil.getInt(request, "pageIndex");
+        int pageSize = HttpServletRequestUtil.getInt(request, "pageSize");
+        Shop currentShop = (Shop) request.getSession().getAttribute(
+                "currentShop");
+        if ((pageIndex > -1) && (pageSize > -1) && (currentShop != null)
+                && (currentShop.getShopId() != null)) {
+            long productCategoryId = HttpServletRequestUtil.getLong(request,
+                    "productCategoryId");
+            String productName = HttpServletRequestUtil.getString(request,
+                    "productName");
+            Product productCondition = compactProductCondition4Search(
+                    currentShop.getShopId(), productCategoryId, productName);
+            ProductExecution pe = productService.getProductList(
+                    productCondition, pageIndex, pageSize);
+            modelMap.put("productList", pe.getProductList());
+            modelMap.put("count", pe.getCount());
+            modelMap.put("success", true);
+        } else {
+            modelMap.put("success", false);
+            modelMap.put("errMsg", "empty pageSize or pageIndex or shopId");
+        }
+        return modelMap;
+    }
+
+    private Product compactProductCondition4Search(Long shopId, long productCategoryId, String productName) {
+        Product productCondition = new Product();
+        Shop shop = new Shop();
+        shop.setShopId(shopId);
+        productCondition.setShop(shop);
+        if (productCategoryId != -1L) {
+            ProductCategory productCategory = new ProductCategory();
+            productCategory.setProductCategoryId(productCategoryId);
+            productCondition.setProductCategory(productCategory);
+        }
+        if (productName != null) {
+            productCondition.setProductName(productName);
+        }
+        return productCondition;
+    }
 
 
 }

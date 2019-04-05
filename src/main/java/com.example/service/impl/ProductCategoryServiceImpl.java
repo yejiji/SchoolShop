@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import com.example.dao.ProductCategoryDao;
+import com.example.dao.ProductDao;
 import com.example.dto.ProductCategoryExecution;
 import com.example.entity.ProductCategory;
 import com.example.enums.ProductCategoryStateEnum;
@@ -20,6 +21,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Autowired
     private ProductCategoryDao productCategoryDao;
+    @Autowired
+    private ProductDao productDao;
 
     @Override
     public List<ProductCategory> queryProductCategoryList(long shopId) {
@@ -50,6 +53,14 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Transactional
     public ProductCategoryExecution deleteProductCategory(long productcategoryId, long shopId) throws ProductCategoryOperationException {
         //TODO讲此商品类别下的商品的类别Id设置空
+        try {
+            int effectedNum = productDao.updateProductCategoryToNull(productcategoryId);
+            if (effectedNum<0){
+                throw new  RuntimeException("商品类别更新");
+            }
+        }catch (Exception e){
+            throw  new RuntimeException("deleteProductCategory Err"+e.getMessage());
+        }
         try {
             int effectedNum = productCategoryDao.deleteProductCategory(productcategoryId,shopId);
             if (effectedNum<=0){
