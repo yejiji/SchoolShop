@@ -3,7 +3,7 @@
  */
 $(function() {
     var shopId = 1;
-    var listUrl = '/shopadmin/listproductsbyshop?pageIndex=1&pageSize=9999'
+    var listUrl = '/shopadmin/listproductsbyshop?pageIndex=1&pageSize=9999';
 
     var deleteUrl = '/shopadmin/modifyproduct';
 
@@ -94,12 +94,12 @@ $(function() {
                     deleteItem(e.currentTarget.dataset.id,
                         e.currentTarget.dataset.status);
                 } else if (target.hasClass('preview')) {
-                    window.location.href = '/frontend/productdetail?productId='
+                    window.location.href = '/frontend/productmanage?productId='
                         + e.currentTarget.dataset.id;
                 }
             });
 
     $('#new').click(function() {
-        window.location.href = '/myo2o/shop/productedit';
+        window.location.href = '/shopadmin/productmanage';
     });
 });
