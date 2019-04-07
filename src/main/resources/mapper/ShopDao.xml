@@ -83,6 +83,12 @@
                 and s.shop_category_id =
                 #{shopCondition.shopCategory.shopCategoryId}
             </if>
+            <if
+                    test="shopCondition.parentCategory!=null
+				 and shopCondition.parentCategory.shopCategoryId!=null">
+                and parent_category_id =
+                #{shopCondition.parentCategory.shopCategoryId}
+            </if>
             <if test="shopCondition.area!=null
 				 and shopCondition.area.areaId!=null">
                 and s.area_id =

@@ -20,4 +20,9 @@ public class ShopCategoryServiceImpl implements ShopCategoryService {
     public List<ShopCategory> getShopCategoryList(ShopCategory shopCategory) {
         return shopCategoryDao.queryShopCategory(shopCategory);
     }
+
+    @Override
+    public List<ShopCategory> getFirstLevelShopCategoryList() {
+        return null;
+    }
 }
