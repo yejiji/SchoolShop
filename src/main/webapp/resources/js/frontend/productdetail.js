@@ -12,7 +12,7 @@ $(function() {
                     $('#product-img').attr('src', product.imgAddr);
                     $('#product-time').text(
                         new Date(product.lastEditTime)
-                            .Format("yyyy-MM-dd"));
+                            .format("yyyy-MM-dd"));
                     $('#product-name').text(product.productName);
                     $('#product-desc').text(product.productDesc);
                     var imgListHtml = '';

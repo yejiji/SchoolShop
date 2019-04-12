@@ -106,9 +106,11 @@ public class ShopListController {
                                              long shopCategoryId, int areaId, String shopName) {
         Shop shopCondition = new Shop();
         if (parentId != -1L) {
+            ShopCategory childCategory = new ShopCategory();
             ShopCategory parentCategory = new ShopCategory();
             parentCategory.setShopCategoryId(parentId);
-            shopCondition.setShopCategory(parentCategory);
+            childCategory.setParent(parentCategory);
+            shopCondition.setShopCategory(childCategory);
         }
         if (shopCategoryId != -1L) {
             ShopCategory shopCategory = new ShopCategory();

@@ -69,7 +69,7 @@ $(function() {
                         + '</div>' + '</div>' + '</li>' + '</ul>'
                         + '</div>' + '</div>' + '<div class="card-footer">'
                         + '<p class="color-gray">'
-                        + new Date(item.lastEditTime).Format("yyyy-MM-dd")
+                        + new Date(item.lastEditTime).format("yyyy-MM-dd")
                         + '更新</p>' + '<span>点击查看</span>' + '</div>'
                         + '</div>';
                 });
@@ -98,7 +98,7 @@ $(function() {
 
     $('.shop-list').on('click', '.card', function(e) {
         var shopId = e.currentTarget.dataset.shopId;
-        window.location.href = '/myo2o/frontend/shopdetail?shopId=' + shopId;
+        window.location.href = '/frontend/shopdetail?shopId=' + shopId;
     });
 
     $('#shoplist-search-div').on(
